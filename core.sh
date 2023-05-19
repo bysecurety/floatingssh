@@ -1,11 +1,7 @@
 #!/bin/bash
 
-#VARIABLE DECLARATION
-host_ip="54.39.22.16"
-db_ip="54.39.22.16"
-db_name="floatingssh"
-password="wv2006"
-date=$(date -I)
+#Sourcing all the variables from the FSSH config file
+source <(grep -E '^\w+=' /home/ubuntu/FSSH_config.sh)
 
 
 #Randomly generating a new SSH Port number between 1024 and 32767
@@ -31,14 +27,14 @@ sudo sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
 #
 #MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-( sudo mysql -u 'root' --password="$password" << EOF
+sudo mysql -u 'root' --password="$password" << EOF
 
 USE $db_name;
 
 DELETE FROM sshports WHERE host = '$host_ip';
 INSERT INTO sshports ( host, portnum, date) VALUES ( '$host_ip', '$new_port', '2023-05-18');
 
-EOF )
+EOF
 ###
 
 else
@@ -57,22 +53,22 @@ sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
 #
 #MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-( sudo mysql -u 'root' --password="$password" << EOF
+sudo mysql -u 'root' --password="$password" << EOF
 
 USE $db_name;
 
 DELETE FROM sshports WHERE host = '$host_ip';
 INSERT INTO sshports ( host, portnum, date) VALUES ( '$host_ip', '$new_port', '2023-05-18');
 
-EOF )
+EOF
 ###
 
-fi 
+fi
 
 #ADDING AND REMOVING FIREWALL RULES
-( sudo ufw delete allow $old_port &&
-sudo ufw allow $new_port && 
-sudo ufw status | grep $new_port )
+sudo ufw delete allow $old_port
+sudo ufw allow $new_port
+sudo ufw status | grep $new_port
 
 #RESTARTING SSHD TO APPLY NEW PORT CHANGE
-( sudo systemctl restart sshd )
+sudo systemctl restart sshd
