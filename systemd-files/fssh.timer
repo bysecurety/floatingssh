@@ -1,0 +1,9 @@
+[Unit]
+Description="Runs the fssh.services after the specified time."
+
+[Timer]
+OnCalendar=minutely
+Unit=fssh.service
+
+[Install]
+WantedBy=multi-user.target
