@@ -1,5 +1,7 @@
 #!/bin/bash
 #Floating SSH CONFIGURATION
+#This file needs to stay in the '/etc/fssh/' directory otherwise 'core.sh' will not be able to source 
+#script crucial variables and complete successfully.
 
 ####HOST SPECIFIC
 #Your server's IPv4 address
