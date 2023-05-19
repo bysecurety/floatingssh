@@ -1,8 +1,6 @@
 #!/bin/bash
-#Please make sure this file is stored in '/usr/local/bin/fssh/'
-#
-#
-#Sourcing all the variables from the FSSH config file
+
+#Sourcing all the variables from the /etc/fssh/FSSH_config.sh file
 source <(grep -E '^\w+=' /etc/fssh/FSSH_config.sh)
 
 
@@ -19,8 +17,6 @@ port_used=$(sudo netstat -tulpan | grep ":$new_port")
 if [ "$port_used" == "" ];
 then 
 
-echo "Changing SSH Port number ..."
-sleep 1
 
 #UPDATING /ETC/SSH/SSHD_CONFIG
 sudo sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
@@ -29,7 +25,7 @@ sudo sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
 #
 #MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-sudo mysql -u 'root' --password="$password" << EOF
+sudo mysql -u $db_user --password="$password" << EOF
 
 USE $db_name;
 
@@ -41,10 +37,6 @@ EOF
 
 else
 
-
-echo "Port already used, electing new port"
-sleep 1
-
 #GENERATING NEW PORT NUMBER
 new_port=$((1024 + $RANDOM % 32767))
 
@@ -55,7 +47,7 @@ sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
 #
 #MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-sudo mysql -u 'root' --password="$password" << EOF
+sudo mysql -u $db_user --password="$password" << EOF
 
 USE $db_name;
 
