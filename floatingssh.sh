@@ -1,7 +1,9 @@
 #!/bin/bash
-
+#Please make sure this file is stored in '/usr/local/bin/fssh/'
+#
+#
 #Sourcing all the variables from the FSSH config file
-source <(grep -E '^\w+=' /home/ubuntu/FSSH_config.sh)
+source <(grep -E '^\w+=' /etc/fssh/FSSH_config.sh)
 
 
 #Randomly generating a new SSH Port number between 1024 and 32767
