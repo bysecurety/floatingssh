@@ -24,23 +24,22 @@ then
 echo "Changing SSH Port number ..."
 sleep 1
 
-######################################UPDATING /ETC/SSH/SSHD_CONFIG#########################
+#UPDATING /ETC/SSH/SSHD_CONFIG
 sudo sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
 
-############################################################################################
 #
 #
-######################################MYSQL DB UPDATE#######################################
+#MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-sudo mysql -u 'root' --password="$password" << EOF
+( sudo mysql -u 'root' --password="$password" << EOF
 
 USE $db_name;
 
 DELETE FROM sshports WHERE host = '$host_ip';
 INSERT INTO sshports ( host, portnum, date) VALUES ( '$host_ip', '$new_port', '2023-05-18');
 
-EOF
-############################################################################################
+EOF )
+###
 
 else
 
@@ -48,32 +47,32 @@ else
 echo "Port already used, electing new port"
 sleep 1
 
-#########GENERATING NEW PORT NUMBER
+#GENERATING NEW PORT NUMBER
 new_port=$((1024 + $RANDOM % 32767))
 
 ###############UPDATING /ETC/SSH/SSHD_CONFIG
 sed -i "s/Port $old_port/Port $new_port/" /etc/ssh/sshd_config
-############################################################################################
 #
 #
-############MYSQL DB UPDATE
+#
+#MYSQL DB UPDATE
 #Parsing new SSH port to Mysql database that is configured in /etc/floatingssh/fssh.conf
-sudo mysql -u 'root' --password="$password" << EOF
+( sudo mysql -u 'root' --password="$password" << EOF
 
 USE $db_name;
 
 DELETE FROM sshports WHERE host = '$host_ip';
 INSERT INTO sshports ( host, portnum, date) VALUES ( '$host_ip', '$new_port', '2023-05-18');
 
-EOF
-############################################################################################
+EOF )
+###
 
-fi
+fi 
 
 #ADDING AND REMOVING FIREWALL RULES
-sudo ufw delete allow $old_port
-sudo ufw allow $new_port
-sudo ufw status | grep $new_port
+( sudo ufw delete allow $old_port &&
+sudo ufw allow $new_port && 
+sudo ufw status | grep $new_port )
 
 #RESTARTING SSHD TO APPLY NEW PORT CHANGE
-sudo systemctl restart sshd
+( sudo systemctl restart sshd )
