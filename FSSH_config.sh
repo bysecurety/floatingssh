@@ -17,5 +17,19 @@ db_user="FSSH"          #Database username
 ####MISC
 date=$(date -I)         #Date variable (will set value to current date)
 
+#SCHEDULER
+#Set the interval in which your SSH Ports will be changed
+#
+#Here are the options that you can use:
+#
+#minutely
+#hourly
+#daily
+#monthly
+#weekly
+#yearly
+
+interval=""
+
 ####LOGGING SPECIFIC
 COMING SOON ...
