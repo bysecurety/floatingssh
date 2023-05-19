@@ -1,0 +1,6 @@
+[Unit]
+Description=This is the Floating SSH service that executes the SSH Port update and subsequent tasks. Settings can be edited in /etc/fssh/fssh_config.
+
+[Service]
+WorkingDirectory=/usr/local/bin/fssh
+ExecStart=/usr/local/bin/fssh/floatingssh.sh
