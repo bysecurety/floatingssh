@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#Please make sure that this script is stored in '/usr/local/bin/fssh/'
+#Otherwise you will run into problems with the execution of it
+#
 #Sourcing all the variables from the /etc/fssh/FSSH_config.sh file
 source <(grep -E '^\w+=' /etc/fssh/FSSH_config.sh)
 
